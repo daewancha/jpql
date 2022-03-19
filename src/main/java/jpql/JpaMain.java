@@ -20,23 +20,15 @@ public class JpaMain {
             member.setAge(10);
             em.persist(member);
 
-            //반환타입
-//            TypedQuery<Member> query1 = em.createQuery("select m from Member m", Member.class);
-//            TypedQuery<String> query2 = em.createQuery("select m.username from Member m", String.class);
-//            Query query3 = em.createQuery("select m.username, m.age from Member m");
+            em.flush();
+            em.clear();
 
-            //결과조회 API
-//            TypedQuery<Member> query1 = em.createQuery("select m from Member m", Member.class);
-//            List<Member> resultList = query1.getResultList();
-//
-//            TypedQuery<Member> query2 = em.createQuery("select m from Member m", Member.class);
-//            Member singleResult = query2.getSingleResult();
+            List<MemberDTO> result = em.createQuery("select new jpql.MemberDTO(m.username, m.age) from Member m", MemberDTO.class)
+                    .getResultList();
 
-            //파라미터 바인딩
-            TypedQuery<Member> query = em.createQuery("select m from Member m where m.username = :username", Member.class);
-            query.setParameter("username", "member1");
-            Member singleResult = query.getSingleResult();
-
+            MemberDTO memberDTO = result.get(0);
+            System.out.println("username = " + memberDTO.getUsername());
+            System.out.println("age = " + memberDTO.getAge());
 
             tx.commit();
         } catch (Exception e) {
